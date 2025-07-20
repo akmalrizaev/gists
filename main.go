@@ -28,11 +28,17 @@ func gistCreate(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Display a form for creating a new gist"))
 }
 
+// Add a gistCreatePost handler function
+func gistCreatePost(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Save a new gist..."))
+}
+
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/{$}", home)                // Restrict this route to exact match / only
-	mux.HandleFunc("/gist/view/{id}", gistView) // Add the {id} wildcard segment
-	mux.HandleFunc("/gist/create", gistCreate)
+	mux.HandleFunc("GET /{$}", home)                // Restrict this route to exact match / only
+	mux.HandleFunc("GET /gist/view/{id}", gistView) // Add the {id} wildcard segment
+	mux.HandleFunc("GET /gist/create", gistCreate)
+	mux.HandleFunc("POST /gist/create", gistCreatePost)
 
 	log.Print(("starting server on :4000"))
 
