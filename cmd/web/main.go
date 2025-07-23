@@ -23,21 +23,10 @@ func main() {
 		logger: logger,
 	}
 
-	mux := http.NewServeMux()
-
-	fileserver := http.FileServer(http.Dir("./ui/static/"))
-
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileserver))
-
-	mux.HandleFunc("GET /{$}", app.home)                // Restrict this route to exact match / only
-	mux.HandleFunc("GET /gist/view/{id}", app.gistView) // Add the {id} wildcard segment
-	mux.HandleFunc("GET /gist/create", app.gistCreate)
-	mux.HandleFunc("POST /gist/create", app.gistCreatePost)
-
 	// log.Printf("starting server on %s", *addr)
 	logger.Info("starting server", "addr", *addr)
 
-	err := http.ListenAndServe(*addr, mux)
+	err := http.ListenAndServe(*addr, app.routes())
 	// log.Fatal(err)
 	logger.Error(err.Error())
 	os.Exit(1)
