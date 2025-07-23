@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"os"
 
+	models "github.com/akmalrizaev/gists/internal"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type application struct {
 	logger *slog.Logger
+	gists  *models.GistModel
 }
 
 func main() {
@@ -32,6 +34,7 @@ func main() {
 
 	app := &application{
 		logger: logger,
+		gists:  &models.GistModel{DB: db},
 	}
 
 	// log.Printf("starting server on %s", *addr)
