@@ -58,7 +58,17 @@ func (app *application) gistCreate(w http.ResponseWriter, r *http.Request) {
 
 // Add a gistCreatePost handler function
 func (app *application) gistCreatePost(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusCreated)
 
-	w.Write([]byte("Save a new gist..."))
+	title := "O snail"
+	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	expires := 7
+
+	id, err := app.gists.Insert(title, content, expires)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/gist/view/%d", id), http.StatusSeeOther)
+
 }
