@@ -1,10 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
+
+	"github.com/akmalrizaev/gists/internal/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -46,9 +49,21 @@ func (app *application) gistView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	snippet, err := app.gists.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.NotFound(w, r)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
 	// msg := fmt.Sprintf("Display a specific gist with ID %d...", id)
 	// w.Write([]byte(msg))
-	fmt.Fprintf(w, "Display a specific gist with ID %d...", id)
+	// fmt.Fprintf(w, "Display a specific gist with ID %d...", id)
+
+	fmt.Fprintf(w, "%+v", snippet)
 }
 
 // Add a gistCreate handler
