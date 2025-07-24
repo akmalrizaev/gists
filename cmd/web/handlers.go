@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -20,32 +19,32 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// for _, gist := range gists {
-	// 	fmt.Fprintf(w, "%+v\n", gist)
+	app.render(w, r, http.StatusOK, "home.tmpl", templateData{
+		Gists: gists,
+	})
+
+	// files := []string{
+	// 	"./ui/html/base.tmpl",
+	// 	"./ui/html/partials/nav.tmpl",
+	// 	"./ui/html/pages/home.tmpl",
 	// }
 
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-	}
+	// ts, err := template.ParseFiles(files...)
 
-	ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// 	return
+	// }
 
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
+	// data := templateData{
+	// 	Gists: gists,
+	// }
 
-	data := templateData{
-		Gists: gists,
-	}
+	// err = ts.ExecuteTemplate(w, "base", data)
+	// if err != nil {
 
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-
-		app.serverError(w, r, err)
-	}
+	// 	app.serverError(w, r, err)
+	// }
 
 }
 
@@ -67,32 +66,31 @@ func (app *application) gistView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/view.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
-	data := templateData{
+	app.render(w, r, http.StatusOK, "view.tmpl", templateData{
 		Gist: gist,
-	}
+	})
 
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
+	// files := []string{
+	// 	"./ui/html/base.tmpl",
+	// 	"./ui/html/partials/nav.tmpl",
+	// 	"./ui/html/pages/view.tmpl",
+	// }
 
-	// msg := fmt.Sprintf("Display a specific gist with ID %d...", id)
-	// w.Write([]byte(msg))
-	// fmt.Fprintf(w, "Display a specific gist with ID %d...", id)
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// 	return
+	// }
 
-	// fmt.Fprintf(w, "%+v", snippet)
+	// data := templateData{
+	// 	Gist: gist,
+	// }
+
+	// err = ts.ExecuteTemplate(w, "base", data)
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// }
+
 }
 
 // Add a gistCreate handler

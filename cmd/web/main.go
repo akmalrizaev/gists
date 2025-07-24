@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,8 +13,9 @@ import (
 )
 
 type application struct {
-	logger *slog.Logger
-	gists  *models.GistModel
+	logger        *slog.Logger
+	gists         *models.GistModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -32,9 +34,16 @@ func main() {
 	}
 	defer db.Close()
 
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
 	app := &application{
-		logger: logger,
-		gists:  &models.GistModel{DB: db},
+		logger:        logger,
+		gists:         &models.GistModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	// log.Printf("starting server on %s", *addr)
