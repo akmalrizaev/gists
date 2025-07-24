@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -54,7 +54,7 @@ func (app *application) gistView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	snippet, err := app.gists.Get(id)
+	gist, err := app.gists.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			http.NotFound(w, r)
@@ -64,11 +64,32 @@ func (app *application) gistView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/view.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{
+		Gist: gist,
+	}
+
+	err = ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
 	// msg := fmt.Sprintf("Display a specific gist with ID %d...", id)
 	// w.Write([]byte(msg))
 	// fmt.Fprintf(w, "Display a specific gist with ID %d...", id)
 
-	fmt.Fprintf(w, "%+v", snippet)
+	// fmt.Fprintf(w, "%+v", snippet)
 }
 
 // Add a gistCreate handler
