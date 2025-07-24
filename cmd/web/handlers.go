@@ -3,7 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
+
+	// "html/template"
 	"net/http"
 	"strconv"
 
@@ -12,33 +13,37 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Add("Server", "Go")
-
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-
+	snippets, err := app.gists.Latest()
 	if err != nil {
-		// log.Print(err.Error())
-		// app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		app.serverError(w, r, err)
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		// log.Print(err.Error())
-		// app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		app.serverError(w, r, err)
+	for _, snippet := range snippets {
+		fmt.Fprintf(w, "%+v\n", snippet)
 	}
 
-	// w.Write([]byte("Hello from Gists"))
+	// w.Header().Add("Server", "Go")
+
+	// files := []string{
+	// 	"./ui/html/base.tmpl",
+	// 	"./ui/html/partials/nav.tmpl",
+	// 	"./ui/html/pages/home.tmpl",
+	// }
+
+	// ts, err := template.ParseFiles(files...)
+
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// 	return
+	// }
+
+	// err = ts.ExecuteTemplate(w, "base", nil)
+	// if err != nil {
+
+	// 	app.serverError(w, r, err)
+	// }
+
 }
 
 // Add a gistView hadler function
