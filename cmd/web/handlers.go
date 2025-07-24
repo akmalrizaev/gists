@@ -12,37 +12,40 @@ import (
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Server", "Go")
 
-	snippets, err := app.gists.Latest()
+	gists, err := app.gists.Latest()
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
-	for _, snippet := range snippets {
-		fmt.Fprintf(w, "%+v\n", snippet)
+	// for _, gist := range gists {
+	// 	fmt.Fprintf(w, "%+v\n", gist)
+	// }
+
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
 	}
 
-	// w.Header().Add("Server", "Go")
+	ts, err := template.ParseFiles(files...)
 
-	// files := []string{
-	// 	"./ui/html/base.tmpl",
-	// 	"./ui/html/partials/nav.tmpl",
-	// 	"./ui/html/pages/home.tmpl",
-	// }
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
 
-	// ts, err := template.ParseFiles(files...)
+	data := templateData{
+		Gists: gists,
+	}
 
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// 	return
-	// }
+	err = ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
 
-	// err = ts.ExecuteTemplate(w, "base", nil)
-	// if err != nil {
-
-	// 	app.serverError(w, r, err)
-	// }
+		app.serverError(w, r, err)
+	}
 
 }
 
