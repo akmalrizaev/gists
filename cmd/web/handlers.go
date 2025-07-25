@@ -19,9 +19,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "home.tmpl", templateData{
-		Gists: gists,
-	})
+	data := app.newTemplateData(r)
+	data.Gists = gists
+
+	app.render(w, r, http.StatusOK, "home.tmpl", data)
 
 	// files := []string{
 	// 	"./ui/html/base.tmpl",
@@ -66,9 +67,10 @@ func (app *application) gistView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "view.tmpl", templateData{
-		Gist: gist,
-	})
+	data := app.newTemplateData(r)
+	data.Gist = gist
+
+	app.render(w, r, http.StatusOK, "view.tmpl", data)
 
 	// files := []string{
 	// 	"./ui/html/base.tmpl",

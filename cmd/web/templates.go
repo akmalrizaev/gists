@@ -8,8 +8,9 @@ import (
 )
 
 type templateData struct {
-	Gist  models.Gist
-	Gists []models.Gist
+	CurrentYear int
+	Gist        models.Gist
+	Gists       []models.Gist
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
