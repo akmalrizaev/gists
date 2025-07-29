@@ -13,5 +13,5 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /gist/create", app.gistCreate)
 	mux.HandleFunc("POST /gist/create", app.gistCreatePost)
 
-	return app.logRequest(commonHeaders(mux))
+	return app.recoverPanic(app.logRequest(commonHeaders(mux)))
 }

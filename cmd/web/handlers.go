@@ -12,6 +12,7 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Add("Server", "Go")
+	// panic("oops! something went wrong")
 
 	gists, err := app.gists.Latest()
 	if err != nil {
